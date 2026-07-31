@@ -7,11 +7,41 @@
   <style>
     body {
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
       margin: 0;
       background-color: #434445;
+      font-family: system-ui;
+      user-select: none;
+    }
+
+    .stats {
+      display: flex;
+      gap: 32px;
+      margin-bottom: 24px;
+    }
+
+    .stat-box {
+      background: #494b4d;
+      padding: 16px 24px;
+      border-radius: 12px;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      cursor: help;
+    }
+
+    .stat-label {
+      font-size: 14px;
+      color: #b0b3b8;
+      margin-bottom: 4px;
+    }
+
+    .stat-value {
+      font-size: 28px;
+      font-weight: 700;
+      color: #ffffff;
     }
 
     button {
@@ -23,32 +53,59 @@
       border-radius: 16px;
       cursor: pointer;
       transition: background-color 0.2s ease, transform 0.1s ease;
-      font-family: "Noto Color Emoji", sans-serif;
+      font-family: system-ui;
       font-weight: 400;
       font-style: normal;
       -webkit-tap-highlight-color: transparent;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
     }
 
     button:active {
       transform: scale(0.90);
     }
-
-    @import url('https://fonts.googleapis.com/css2?family=Noto+Color+Emoji&display=swap');
-    
   </style>
   <link rel="icon" href="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt; &lt;text y=%22.9em%22 font-size=%2290%22&gt; 🧀 &lt;/text&gt; &lt;/svg&gt;" />
 </head>
 <body>
 
+  <div class="stats">
+    <div class="stat-box" title="Total Clicks">
+      <div class="stat-label">Total Clicks</div>
+      <div class="stat-value" id="clickCount">0</div>
+    </div>
+    <div class="stat-box" title="Clicks Per Second">
+      <div class="stat-label">CPS</div>
+      <div class="stat-value" id="cpsCount">0.0</div>
+    </div>
+  </div>
+
   <button id="button">🧀</button>
 
   <script>
     const sound = new Audio('https://github.com/clickthecheese/clickthecheese.github.io/raw/refs/heads/main/cheese.mp3');
+    const button = document.getElementById('button');
+    const clickCount = document.getElementById('clickCount');
+    const cpsCount = document.getElementById('cpsCount');
 
-    document.getElementById('button').addEventListener('click', () => {
+    let totalClicks = 0;
+    let clickTimestamps = [];
+
+    button.addEventListener('click', () => {
       sound.currentTime = 0;
       sound.play();
+
+      totalClicks++;
+      clickCount.textContent = totalClicks;
+
+      const now = Date.now();
+      clickTimestamps.push(now);
     });
+
+    setInterval(() => {
+      const now = Date.now();
+      clickTimestamps = clickTimestamps.filter(timestamp => now - timestamp <= 1000);
+      cpsCount.textContent = clickTimestamps.length.toFixed(1);
+    }, 100);
   </script>
 
 </body>
