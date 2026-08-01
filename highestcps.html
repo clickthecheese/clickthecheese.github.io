@@ -8,6 +8,7 @@
   <style>
     body {
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
@@ -18,13 +19,8 @@
       color: #ffffff;
     }
 
-    .container {
-      display: grid;
-      place-items: center;
-    }
-
-    .container > * {
-      grid-area: 1 / 1;
+    p {
+      margin: 0;
     }
 
     #highscoreDisplay {
@@ -37,11 +33,9 @@
 </head>
 <body> 
 
-  <div class="container">
-    <p>Your CPS record is</p><br>
-    <div id="highscoreDisplay">0.00</div><br>
-    <p><strong>clicks per second!</strong></p>
-  </div>
+  <p>Your CPS record is</p>
+  <div id="highscoreDisplay">0.00</div>
+  <p><strong>clicks per second!</strong></p>
 
   <script>
     const highscoreDisplay = document.getElementById("highscoreDisplay");
