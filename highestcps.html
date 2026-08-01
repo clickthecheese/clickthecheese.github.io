@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Click The Cheese! - Highest CPS</title>
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      background-color: #434445;
+      font-family: system-ui;
+      user-select: none;
+      color: #ffffff;
+    }
+
+    #highscoreDisplay {
+      font-size: 120px;
+      font-weight: 900;
+      color: #ffffff;
+      text-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+    }
+  </style>
+</head>
+<body>
+
+  <div id="highscoreDisplay">0.00</div>
+
+  <script>
+    const highscoreDisplay = document.getElementById("highscoreDisplay");
+
+    function updateHighscore() {
+      const savedHighscore = parseFloat(localStorage.getItem("cpsHighscore")) || 0.00;
+      highscoreDisplay.innerText = savedHighscore.toFixed(2);
+    }
+
+    updateHighscore();
+
+    window.addEventListener("storage", (event) => {
+      if (event.key === "cpsHighscore") {
+        updateHighscore();
+      }
+    });
+
+    setInterval(updateHighscore, 500);
+  </script>
+
+</body>
+</html>
