@@ -1,110 +1,109 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Click The Cheese! - Play</title>
-  <style>
-    body {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      margin: 0;
-      background-color: #434445;
-      font-family: system-ui;
-      user-select: none;
-      image-rendering: pixelated;
-      color: #ffffff;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt; &lt;text y=%22.9em%22 font-size=%2290%22&gt; 🧀 &lt;/text&gt; &lt;/svg&gt;" />
+    <title>Click The Cheese!</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: system-ui;
+        }
 
-    button {
-      padding: 1px 1px;
-      font-size: 217px;
-      color: #ffffff;
-      background-color: #494b4d;
-      border: none;
-      border-radius: 16px;
-      cursor: pointer;
-      transition: background-color 0.2s ease, transform 0.1s ease;
-      font-family: system-ui;
-      font-weight: 400;
-      font-style: normal;
-      -webkit-tap-highlight-color: transparent;
-      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
-    }
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #434445;
+            color: #111827;
+            padding: 20px;
+        }
 
-    button:active {
-      transform: scale(0.90);
-    }
+        .content {
+            text-align: center;
+            max-width: 650px;
+            width: 100%;
+        }
 
-    #statsText {
-      margin-top: 20px;
-      font-size: 18px;
-      color: #b0b3b8;
-      text-align: center;
-    }
+        .content h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            letter-spacing: -0.025em;
+            margin-bottom: 16px;
+            color: white;
+        }
 
-    #statsText b {
-      font-weight: 700;
-      color: #ffffff;
-    }
-  </style>
-  <link rel="icon" href="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt; &lt;text y=%22.9em%22 font-size=%2290%22&gt; 🧀 &lt;/text&gt; &lt;/svg&gt;" />
+        .content p {
+            font-size: 1.125rem;
+            color: white;
+            margin-bottom: 32px;
+            line-height: 1.6;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            text-decoration: none;
+            padding: 14px 28px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.2s ease-in-out;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-primary {
+            background-color: #494b4d;
+            color: #ffffff;
+        }
+
+        .btn-primary:hover {
+            background-color: #404040;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background-color: #f1f5f9;
+            color: #0f172a
+        }
+
+        .btn-secondary:hover {
+            background-color: #e2e8f0;
+            transform: translateY(-1px);
+        }
+
+        .btn:active {
+        transform: scale(0.90);
+        }
+
+    </style>
 </head>
 <body>
 
-  <button id="clickBtn">🧀</button>
-
-  <p id="statsText">
-    <b id="totalClicks">0</b> Total Clicks • <b id="cpsVal">0.00</b> CPS
-  </p>
-
-  <script>
-    let totalClicks = 0;
-    let clickTimes = [];
-    let highscore = parseFloat(localStorage.getItem("cpsHighscore")) || 0.00;
-
-    const clickBtn = document.getElementById("clickBtn");
-    const totalClicksEl = document.getElementById("totalClicks");
-    const cpsValEl = document.getElementById("cpsVal");
-
-    const clickSound = new Audio("https://github.com/clickthecheese/clickthecheese.github.io/raw/refs/heads/main/cheese.mp3");
-
-    clickBtn.addEventListener("click", () => {
-      clickSound.currentTime = 0;
-      clickSound.play();
-
-      const now = Date.now();
-      totalClicks++;
-      clickTimes.push(now);
-
-      totalClicksEl.innerText = totalClicks;
-    });
-
-    setInterval(() => {
-      const now = Date.now();
-      clickTimes = clickTimes.filter(time => now - time <= 1000);
-      
-      let currentCPS = 0;
-
-      if (clickTimes.length >= 3) {
-        const timeSpan = (clickTimes[clickTimes.length - 1] - clickTimes[0]) / 1000;
-        currentCPS = timeSpan > 0 ? (clickTimes.length - 1) / timeSpan : 0;
-      } else if (clickTimes.length === 2) {
-        const timeSpan = (clickTimes[1] - clickTimes[0]) / 1000;
-        currentCPS = timeSpan > 0.1 ? 1 / timeSpan : 0;
-      }
-
-      cpsValEl.innerText = currentCPS.toFixed(2);
-
-      if (clickTimes.length >= 3 && currentCPS > highscore) {
-        highscore = currentCPS;
-        localStorage.setItem("cpsHighscore", highscore);
-      }
-    }, 10);
-  </script>
+    <main class="content">
+        <h1>Click The Cheese! 🧀</h1>
+        <p>Just a cheese clicking game with a CPS tester.</p>
+        
+        <div class="button-group">
+            <a href="https://clickthecheese.github.io/play" target="_self" class="btn btn-primary">Play!</a>
+            <a href="https://clickthecheese.github.io/highestcps" target="_self" class="btn btn-secondary">Your Highest CPS</a>
+        </div>
+    </main>
 
 </body>
 </html>
