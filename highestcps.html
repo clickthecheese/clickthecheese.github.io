@@ -63,6 +63,7 @@
   <div id="highscoreDisplay">0.00</div>
   <p><strong>clicks per second!</strong></p>
   <a href="https://clickthecheese.github.io/play" target="_self">Back</a>
+  <button onclick="window.location.href='https://clickthecheese.github.io'">Back</button>
 
   <script>
     const highscoreDisplay = document.getElementById("highscoreDisplay");
@@ -74,8 +75,7 @@
 
     updateHighscore();
 
-    window.addEventListener("storage", (event) => {
-      if (event.key === "cpsHighscore") {
+    window.addEventListener("storage", (event) =>     if (event.key === "cpsHighscore") {
         updateHighscore();
       }
     });
