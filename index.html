@@ -16,32 +16,6 @@
       font-family: system-ui;
       user-select: none;
       image-rendering: pixelated;
-    }
-
-    .stats {
-      display: flex;
-      gap: 32px;
-      margin-bottom: 24px;
-    }
-
-    .stat-box {
-      background: #494b4d;
-      padding: 16px 24px;
-      border-radius: 12px;
-      text-align: center;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-      cursor: help;
-    }
-
-    .stat-label {
-      font-size: 14px;
-      color: #b0b3b8;
-      margin-bottom: 4px;
-    }
-
-    .stat-value {
-      font-size: 28px;
-      font-weight: 700;
       color: #ffffff;
     }
 
@@ -65,62 +39,71 @@
       transform: scale(0.90);
     }
 
+    #statsText {
+      margin-top: 20px;
+      font-size: 18px;
+      color: #b0b3b8;
+      text-align: center;
+    }
+
+    #statsText b {
+      font-weight: 700;
+      color: #ffffff;
+    }
   </style>
   <link rel="icon" href="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt; &lt;text y=%22.9em%22 font-size=%2290%22&gt; 🧀 &lt;/text&gt; &lt;/svg&gt;" />
 </head>
 <body>
 
-  <div class="stats">
-    <div class="stat-box" title="Total Clicks">
-      <div class="stat-label">Total Clicks</div>
-      <div class="stat-value" id="clickCount">0</div>
-    </div>
-    <div class="stat-box" title="Clicks Per Second">
-      <div class="stat-label">CPS</div>
-      <div class="stat-value" id="cpsCount">0.00</div>
-    </div>
-  </div>
+  <button id="clickBtn">🧀</button>
 
-  <button id="button">🧀</button>
+  <p id="statsText">
+    <b id="totalClicks">0</b> Total Clicks • <b id="cpsVal">0.00</b> CPS
+  </p>
 
   <script>
-    const sound = new Audio('https://github.com/clickthecheese/clickthecheese.github.io/raw/refs/heads/main/cheese.mp3');
-const button = document.getElementById('button');
-const clickCount = document.getElementById('clickCount');
-const cpsCount = document.getElementById('cpsCount');
+    let totalClicks = 0;
+    let clickTimes = [];
+    let highscore = parseFloat(localStorage.getItem("cpsHighscore")) || 0.00;
 
-let totalClicks = 0;
-let clickTimestamps = [];
+    const clickBtn = document.getElementById("clickBtn");
+    const totalClicksEl = document.getElementById("totalClicks");
+    const cpsValEl = document.getElementById("cpsVal");
 
-button.addEventListener('click', () => {
-  sound.currentTime = 0;
-  sound.play();
+    const clickSound = new Audio("https://github.com/clickthecheese/clickthecheese.github.io/raw/refs/heads/main/cheese.mp3");
 
-  totalClicks++;
-  clickCount.textContent = totalClicks;
+    clickBtn.addEventListener("click", () => {
+      clickSound.currentTime = 0;
+      clickSound.play();
 
-  const now = Date.now();
-  clickTimestamps.push(now);
-});
+      const now = Date.now();
+      totalClicks++;
+      clickTimes.push(now);
 
-setInterval(() => {
-  const now = Date.now();
-  clickTimestamps = clickTimestamps.filter(timestamp => now - timestamp <= 1000);
+      totalClicksEl.innerText = totalClicks;
+    });
 
-  if (clickTimestamps.length < 2) {
-    cpsCount.textContent = clickTimestamps.length === 1 ? "1.00" : "0.00";
-    return;
-  }
+    setInterval(() => {
+      const now = Date.now();
+      clickTimes = clickTimes.filter(time => now - time <= 1000);
+      
+      let currentCPS = 0;
 
-  const duration = (now - clickTimestamps[0]) / 1000;
-  
-  if (duration > 0) {
-    const liveCPS = clickTimestamps.length / duration;
-    cpsCount.textContent = liveCPS.toFixed(2);
-  } else {
-    cpsCount.textContent = "0.00";
-  }
-}, 30);
+      if (clickTimes.length >= 3) {
+        const timeSpan = (clickTimes[clickTimes.length - 1] - clickTimes[0]) / 1000;
+        currentCPS = timeSpan > 0 ? (clickTimes.length - 1) / timeSpan : 0;
+      } else if (clickTimes.length === 2) {
+        const timeSpan = (clickTimes[1] - clickTimes[0]) / 1000;
+        currentCPS = timeSpan > 0.1 ? 1 / timeSpan : 0;
+      }
+
+      cpsValEl.innerText = currentCPS.toFixed(2);
+
+      if (clickTimes.length >= 3 && currentCPS > highscore) {
+        highscore = currentCPS;
+        localStorage.setItem("cpsHighscore", highscore);
+      }
+    }, 10);
   </script>
 
 </body>
