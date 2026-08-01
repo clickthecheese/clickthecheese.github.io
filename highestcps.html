@@ -29,6 +29,32 @@
       color: #ffffff;
       text-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
     }
+
+    button {
+    background-color: #f1f5f9;
+    color: #0f172a
+    text-decoration: none;
+    padding: 14px 28px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.2s ease-in-out;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+    }
+    
+    button:hover {
+    background-color: #e2e8f0;
+    transform: translateY(-1px);
+    }
+    button:active {
+    transform: scale(0.90);
+    }
+    
   </style>
 </head>
 <body> 
@@ -36,6 +62,7 @@
   <p>Your CPS record is</p>
   <div id="highscoreDisplay">0.00</div>
   <p><strong>clicks per second!</strong></p>
+  <a href="https://clickthecheese.github.io/play" target="_self">Back</a>
 
   <script>
     const highscoreDisplay = document.getElementById("highscoreDisplay");
