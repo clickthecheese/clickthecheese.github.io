@@ -47,7 +47,7 @@
 
     button {
       padding: 1px 1px;
-      font-size: 200px;
+      font-size: 217px;
       color: #ffffff;
       background-color: #494b4d;
       border: none;
@@ -77,7 +77,7 @@
     </div>
     <div class="stat-box" title="Clicks Per Second">
       <div class="stat-label">CPS</div>
-      <div class="stat-value" id="cpsCount">0.0</div>
+      <div class="stat-value" id="cpsCount">0.00</div>
     </div>
   </div>
 
@@ -85,29 +85,42 @@
 
   <script>
     const sound = new Audio('https://github.com/clickthecheese/clickthecheese.github.io/raw/refs/heads/main/cheese.mp3');
-    const button = document.getElementById('button');
-    const clickCount = document.getElementById('clickCount');
-    const cpsCount = document.getElementById('cpsCount');
+const button = document.getElementById('button');
+const clickCount = document.getElementById('clickCount');
+const cpsCount = document.getElementById('cpsCount');
 
-    let totalClicks = 0;
-    let clickTimestamps = [];
+let totalClicks = 0;
+let clickTimestamps = [];
 
-    button.addEventListener('click', () => {
-      sound.currentTime = 0;
-      sound.play();
+button.addEventListener('click', () => {
+  sound.currentTime = 0;
+  sound.play();
 
-      totalClicks++;
-      clickCount.textContent = totalClicks;
+  totalClicks++;
+  clickCount.textContent = totalClicks;
 
-      const now = Date.now();
-      clickTimestamps.push(now);
-    });
+  const now = Date.now();
+  clickTimestamps.push(now);
+});
 
-    setInterval(() => {
-      const now = Date.now();
-      clickTimestamps = clickTimestamps.filter(timestamp => now - timestamp <= 1000);
-      cpsCount.textContent = clickTimestamps.length.toFixed(1);
-    }, 100);
+setInterval(() => {
+  const now = Date.now();
+  clickTimestamps = clickTimestamps.filter(timestamp => now - timestamp <= 1000);
+
+  if (clickTimestamps.length < 2) {
+    cpsCount.textContent = clickTimestamps.length === 1 ? "1.00" : "0.00";
+    return;
+  }
+
+  const duration = (now - clickTimestamps[0]) / 1000;
+  
+  if (duration > 0) {
+    const liveCPS = clickTimestamps.length / duration;
+    cpsCount.textContent = liveCPS.toFixed(2);
+  } else {
+    cpsCount.textContent = "0.00";
+  }
+}, 30);
   </script>
 
 </body>
